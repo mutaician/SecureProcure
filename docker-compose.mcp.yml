@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  techhub:
+    build: ./mcp-techhub
+    ports:
+      - "3001:3001"
+    networks:
+      - mcp-network
+
+  gadgetzone:
+    build: ./mcp-gadgetzone
+    ports:
+      - "3002:3002"
+    networks:
+      - mcp-network
+
+  iotmarket:
+    build: ./mcp-iotmarket
+    ports:
+      - "3003:3003"
+    networks:
+      - mcp-network
+
+  cart:
+    build: ./mcp-cart
+    ports:
+      - "3004:3004"
+    networks:
+      - mcp-network
+
+networks:
+  mcp-network:
+    driver: bridge
