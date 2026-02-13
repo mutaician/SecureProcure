@@ -7,28 +7,44 @@ const cartItems: Map<number, CartItem> = new Map();
 let nextId = 1;
 let budget = 1000;
 
+// Helper to determine trust level from product_id or retailer
+function determineTrustLevel(product_id: string, retailer: string): "trusted" | "untrusted" {
+  // Product ID prefixes: th-=TechHub, gz-=GadgetZone, iot-=IoTMarket
+  if (product_id.startsWith("iot-")) return "untrusted";
+  if (product_id.startsWith("th-")) return "trusted";
+  if (product_id.startsWith("gz-")) return "trusted";
+  
+  // Fallback to retailer name
+  if (retailer.toLowerCase() === "iotmarket") return "untrusted";
+  return "trusted";
+}
+
 export function addItem(
   product_id: string,
   name: string,
   price: number,
   retailer: string,
-  trust_level: string
+  trust_level?: string
 ): CartItem {
   const id = nextId++;
+  // ALWAYS auto-determine trust_level from product_id - ignore passed value
+  // This prevents agents from overriding security classification
+  const determinedTrust = determineTrustLevel(product_id, retailer);
+    
   const item: CartItem = {
     cart_item_id: id,
     id: product_id,
     name,
     price,
     retailer,
-    trust_level: trust_level as "trusted" | "untrusted",
+    trust_level: determinedTrust,
     category: "",
     rating: 0,
     in_stock: true,
     added_at: new Date().toISOString()
   };
   cartItems.set(id, item);
-  return item;
+  return item;  
 }
 
 export function removeItem(cart_item_id: number): boolean {
@@ -60,19 +76,17 @@ export function clearCart(): void {
   cartItems.clear();
 }
 
-export function processPayment(): { success: boolean; receipt_id: string; message: string } {
+export function processPayment(userConfirmed: boolean = false): { 
+  success: boolean; 
+  requires_confirmation?: boolean;
+  receipt_id: string; 
+  message: string;
+  untrusted_retailers?: string[];
+} {
   const cart = getCart();
   
   if (cart.items.length === 0) {
     return { success: false, receipt_id: "", message: "Cart is empty" };
-  }
-  
-  if (cart.has_untrusted_items) {
-    return { 
-      success: false, 
-      receipt_id: "", 
-      message: "SECURITY BLOCK: Cannot process payment with untrusted retailer items in cart" 
-    };
   }
   
   if (cart.total > cart.budget) {
@@ -80,6 +94,23 @@ export function processPayment(): { success: boolean; receipt_id: string; messag
       success: false, 
       receipt_id: "", 
       message: `Budget exceeded: $${cart.total} > $${cart.budget}` 
+    };
+  }
+  
+  // Check for untrusted items - require user confirmation
+  if (cart.has_untrusted_items && !userConfirmed) {
+    const untrustedRetailers = [...new Set(
+      cart.items
+        .filter(item => item.trust_level === "untrusted")
+        .map(item => item.retailer)
+    )];
+    
+    return { 
+      success: false, 
+      requires_confirmation: true,
+      receipt_id: "", 
+      message: `Payment requires confirmation: Cart contains items from ${untrustedRetailers.join(", ")}. These retailers are not verified. Please confirm if you want to proceed with the purchase.`,
+      untrusted_retailers: untrustedRetailers
     };
   }
   

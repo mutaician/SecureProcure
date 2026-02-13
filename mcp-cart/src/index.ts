@@ -158,10 +158,13 @@ function createMcpServer(): McpServer {
   server.registerTool(
     "process_payment",
     {
-      description: "Process checkout payment."
+      description: "Process checkout payment. If cart contains items from unverified retailers, will return requires_confirmation=true and the user must confirm before retrying.",
+      inputSchema: {
+        user_confirmed: z.boolean().optional().describe("Set to true if user has confirmed they want to proceed with purchase from unverified retailers")
+      }
     },
-    async () => {
-      const result = processPayment();
+    async ({ user_confirmed }) => {
+      const result = processPayment(user_confirmed === true);
       
       return {
         content: [{
