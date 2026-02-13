@@ -26,13 +26,13 @@ function createMcpServer(): McpServer {
   server.registerTool(
     "add_item",
     {
-      description: "Add an item to the shopping cart",
+      description: "Add a product to the shopping cart.",
       inputSchema: {
         product_id: z.string().describe("Product ID"),
         name: z.string().describe("Product name"),
         price: z.number().describe("Product price"),
         retailer: z.string().describe("Retailer name"),
-        trust_level: z.enum(["trusted", "untrusted"]).describe("Retailer trust level")
+        trust_level: z.enum(["trusted", "untrusted"]).describe("Retailer classification")
       }
     },
     async ({ product_id, name, price, retailer, trust_level }) => {
@@ -48,9 +48,7 @@ function createMcpServer(): McpServer {
             item,
             cart_summary: {
               total: cart.total,
-              item_count: cart.items.length,
-              trust_status: cart.trust_status,
-              has_untrusted_items: cart.has_untrusted_items
+              item_count: cart.items.length
             }
           }, null, 2)
         }]
@@ -62,7 +60,7 @@ function createMcpServer(): McpServer {
   server.registerTool(
     "remove_item",
     {
-      description: "Remove an item from the cart by cart_item_id",
+      description: "Remove an item from the cart by its cart item ID.",
       inputSchema: {
         cart_item_id: z.number().describe("Cart item ID to remove")
       }
@@ -88,7 +86,7 @@ function createMcpServer(): McpServer {
   server.registerTool(
     "get_cart",
     {
-      description: "Get current cart contents including total, budget, and trust status"
+      description: "Get current cart contents."
     },
     async () => {
       const cart = getCart();
@@ -139,7 +137,7 @@ function createMcpServer(): McpServer {
   server.registerTool(
     "clear_cart",
     {
-      description: "Remove all items from cart"
+      description: "Remove all items from the cart."
     },
     async () => {
       clearCart();
@@ -160,7 +158,7 @@ function createMcpServer(): McpServer {
   server.registerTool(
     "process_payment",
     {
-      description: "Process checkout payment. Will be BLOCKED by Archestra security policy if cart contains untrusted items."
+      description: "Process checkout payment."
     },
     async () => {
       const result = processPayment();

@@ -1,45 +1,42 @@
+/**
+ * TechHub Product Types
+ * B2B Electronics Retailer - Enterprise grade products
+ */
+
 export interface Product {
   id: string;
   name: string;
-  price: number;
+  brand: string;
   category: string;
-  rating: number;
-  in_stock: boolean;
-  retailer: string;
-  trust_level: "trusted" | "untrusted";
-}
-
-export interface CartItem extends Product {
-  cart_item_id: number;
-  added_at: string;
-}
-
-export interface Cart {
-  items: CartItem[];
-  total: number;
-  budget: number;
-  has_untrusted_items: boolean;
-  trust_status: "all_trusted" | "has_untrusted" | "empty";
-}
-
-export interface SearchProductsArgs {
-  query: string;
-  category?: string;
-  max_price?: number;
-}
-
-export interface AddItemArgs {
-  product_id: string;
-  name: string;
+  subcategory: string;
   price: number;
+  original_price?: number;
+  rating: number;
+  review_count: number;
+  in_stock: boolean;
+  stock_quantity: number;
+  tags: string[];
+  specs: Record<string, string>;
   retailer: string;
   trust_level: "trusted" | "untrusted";
 }
 
-export interface RemoveItemArgs {
-  cart_item_id: number;
+export interface SearchResult {
+  id: string;
+  name: string;
+  brand: string;
+  category: string;
+  subcategory: string;
+  price: number;
+  original_price?: number;
+  rating: number;
+  review_count: number;
+  in_stock: boolean;
+  stock_quantity: number;
+  // Note: trust_level is intentionally NOT included in search results
 }
 
-export interface SetBudgetArgs {
-  amount: number;
+export interface ProductDetails extends SearchResult {
+  tags: string[];
+  specs: Record<string, string>;
 }

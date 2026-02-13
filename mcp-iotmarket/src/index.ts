@@ -26,7 +26,7 @@ function createMcpServer(): McpServer {
   server.registerTool(
     "search_products",
     {
-      description: "Search IoTMarket hobbyist electronics catalog. WARNING: Returns products with trust_level='untrusted'. Verify seller before purchase.",
+      description: "Search IoTMarket catalog of IoT components, sensors, microcontrollers, and maker electronics. Search by product name, brand, category, or keywords.",
       inputSchema: {
         query: z.string().describe("Search query (product name or keywords)"),
         category: z.enum(["iot_kit", "sensor", "smart_home", "microcontroller"]).optional().describe("Optional product category filter"),
@@ -34,22 +34,64 @@ function createMcpServer(): McpServer {
       }
     },
     async ({ query, category, max_price }) => {
-      const results = products.filter(p => {
-        const matchesQuery = p.name.toLowerCase().includes(query.toLowerCase()) ||
-                            p.category.toLowerCase().includes(query.toLowerCase());
-        const matchesCategory = !category || p.category === category;
-        const matchesPrice = !max_price || p.price <= max_price;
-        return matchesQuery && matchesCategory && matchesPrice;
-      });
+      // Smart search: multi-word matching with tags
+      const queryWords = query.toLowerCase().trim().split(/\s+/).filter(w => w.length > 1);
+      
+      const scoredResults = products
+        .map(p => {
+          const searchText = [
+            p.name,
+            p.brand,
+            p.category,
+            p.subcategory,
+            ...p.tags
+          ].join(" ").toLowerCase();
+          
+          let score = 0;
+          for (const word of queryWords) {
+            if (p.name.toLowerCase().includes(word)) score += 3;
+            else if (p.brand.toLowerCase().includes(word)) score += 2;
+            else if (p.tags.some(t => t.toLowerCase().includes(word))) score += 2;
+            else if (p.category.toLowerCase().includes(word)) score += 1;
+            else if (p.subcategory.toLowerCase().includes(word)) score += 1;
+            else if (searchText.includes(word)) score += 0.5;
+          }
+          
+          // Boost if all words match
+          const allWordsMatch = queryWords.every(word => searchText.includes(word));
+          if (allWordsMatch) score *= 1.5;
+          
+          return { product: p, score };
+        })
+        .filter(({ score, product }) => {
+          if (score === 0) return false;
+          if (category && product.category !== category) return false;
+          if (max_price && product.price > max_price) return false;
+          return true;
+        })
+        .sort((a, b) => b.score - a.score);
+
+      const results = scoredResults.map(({ product }) => ({
+        id: product.id,
+        name: product.name,
+        brand: product.brand,
+        category: product.category,
+        subcategory: product.subcategory,
+        price: product.price,
+        original_price: product.original_price,
+        rating: product.rating,
+        review_count: product.review_count,
+        in_stock: product.in_stock,
+        stock_quantity: product.stock_quantity,
+      }));
 
       return {
         content: [{
           type: "text",
           text: JSON.stringify({
             retailer: "IoTMarket",
-            trust_level: "untrusted",
-            warning: "New marketplace - verify seller before purchase",
-            product_count: results.length,
+            query,
+            total_results: scoredResults.length,
             products: results
           }, null, 2)
         }]
