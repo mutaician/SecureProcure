@@ -1,0 +1,27 @@
+{
+  "name": "secureprocure",
+  "version": "1.0.0",
+  "description": "Agentic electronics procurement with trust-based security",
+  "type": "module",
+  "scripts": {
+    "build:all": "pnpm run build --recursive",
+    "start:techhub": "node mcp-techhub/dist/index.js",
+    "start:gadgetzone": "node mcp-gadgetzone/dist/index.js",
+    "start:iotmarket": "node mcp-iotmarket/dist/index.js",
+    "start:cart": "node mcp-cart/dist/index.js",
+    "dev:techhub": "cd mcp-techhub && pnpm run dev",
+    "dev:gadgetzone": "cd mcp-gadgetzone && pnpm run dev",
+    "dev:iotmarket": "cd mcp-iotmarket && pnpm run dev",
+    "dev:cart": "cd mcp-cart && pnpm run dev"
+  },
+  "workspaces": [
+    "mcp-techhub",
+    "mcp-gadgetzone",
+    "mcp-iotmarket",
+    "mcp-cart"
+  ],
+  "devDependencies": {
+    "@modelcontextprotocol/sdk": "^1.26.0",
+    "concurrently": "^8.2.0"
+  }
+}

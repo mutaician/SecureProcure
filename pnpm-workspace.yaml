@@ -1,0 +1,8 @@
+packages:
+  - mcp-techhub
+  - mcp-gadgetzone
+  - mcp-iotmarket
+  - mcp-cart
+
+onlyBuiltDependencies:
+  - better-sqlite3
