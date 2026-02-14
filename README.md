@@ -164,7 +164,7 @@ npm install -g pnpm
 
 # Clone repository
 git clone https://github.com/mutaician/SecureProcure.git
-cd 2fst-2mcp-hckthn
+cd secureprocure
 
 # Install dependencies
 pnpm install
@@ -181,7 +181,7 @@ pnpm run build:all
 
 ```bash
 git https://github.com/mutaician/SecureProcure.git
-cd 2fst-2mcp-hckthn
+cd secureprocure
 ```
 
 ### 2. Start MCP Servers
@@ -192,10 +192,10 @@ docker-compose -f docker-compose.mcp.yml up -d
 
 Verify they're running:
 ```bash
-curl http://localhost:3001/health  # TechHub
-curl http://localhost:3002/health  # GadgetZone
-curl http://localhost:3003/health  # IoTMarket
-curl http://localhost:3004/health  # Cart
+curl http://secureprocure_techhub_1:3001/health  # TechHub
+curl http://secureprocure_gadgetzone_1:3002/health  # GadgetZone
+curl http://secureprocure_iotmarket_1:3003/health  # IoTMarket
+curl http://secureprocure_cart_1:3004/health  # Cart
 ```
 
 ### 3. Start Archestra
@@ -263,7 +263,7 @@ echo '/swapfile none swap sw 0 0' >> /etc/fstab
 ```bash
 # Clone repository
 git clone https://github.com/mutaician/SecureProcure.git
-cd 2fst-2mcp-hckthn
+cd secureprocure
 
 # Update docker-compose to bind to all interfaces
 sed -i 's/"3001:3001"/"0.0.0.0:3001:3001"/' docker-compose.mcp.yml
@@ -333,10 +333,10 @@ Navigate to **MCP Registry** → **Add MCP Server** → **Remote**
 
 | Name | Server URL | Authentication |
 |------|------------|----------------|
-| TechHub | `http://YOUR_IP:3001/sse` | None |
-| GadgetZone | `http://YOUR_IP:3002/sse` | None |
-| IoTMarket | `http://YOUR_IP:3003/sse` | None |
-| Cart | `http://YOUR_IP:3004/sse` | None |
+| TechHub | `http://secureprocure_techhub_1:3001/sse` | None |
+| GadgetZone | `http://secureprocure_gadgetzone_1:3002/sse` | None |
+| IoTMarket | `http://secureprocure_iotmarket_1:3003/sse` | None |
+| Cart | `http://secureprocure_cart_1:3004/sse` | None |
 
 > **Note**: Use your server's public IP (or `localhost` for local development). The URL **must end in `/sse`** for Archestra's StreamableHTTP transport.
 
@@ -347,7 +347,7 @@ Navigate to **Agents** → **Create Agent**
 **Basic Settings:**
 - **Name**: `discovery-agent`
 - **Description**: `Product researcher that finds the best electronics across all retailers. Returns a single recommendation with alternatives if needed. Call this when you need to find products.`
-- **Model**: GPT-4 or GPT-4o
+- **Model**: gpt-5.2
 
 **System Prompt:**
 ```
@@ -376,7 +376,7 @@ Navigate to **Agents** → **Create Agent**
 **Basic Settings:**
 - **Name**: `checkout-agent`
 - **Description**: `Handles cart operations and payments. Call this to add items to cart and process checkout. Will request user confirmation if needed.`
-- **Model**: GPT-4 or GPT-4o
+- **Model**: gpt-5.2
 
 **System Prompt:**
 ```
@@ -402,7 +402,7 @@ Navigate to **Agents** → **Create Agent**
 **Basic Settings:**
 - **Name**: `procurement-orchestrator` (or just `orchestrator`)
 - **Description**: `Handles electronics procurement from start to finish. Takes user requests, delegates to specialists, and drives the process forward. Main entry point for all purchasing requests.`
-- **Model**: GPT-4 or GPT-4o
+- **Model**: gpt-5.2
 - **Enable as Chat Agent**: ✅ (This makes it available in the chat interface)
 
 **System Prompt:**
@@ -510,8 +510,8 @@ Expected Flow:
 docker ps
 
 # Check logs
-docker logs 2fst-2mcp-hckthn-techhub-1
-docker logs 2fst-2mcp-hckthn-cart-1
+docker logs secureprocure_techhub_1
+docker logs secureprocure_cart_1
 
 # Restart MCP servers
 docker-compose -f docker-compose.mcp.yml restart

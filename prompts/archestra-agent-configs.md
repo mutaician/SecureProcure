@@ -6,7 +6,7 @@ This document contains the complete agent configuration for reproducing the Secu
 
 **Name:** `discovery-agent`  
 **Description:** `Product researcher that finds the best electronics across all retailers. Returns a single recommendation with alternatives if needed. Call this when you need to find products.`  
-**Model:** GPT-4, GPT-4o, or GPT-5.2
+**Model:** gpt-5.2
 
 ### System Prompt
 ```
@@ -32,9 +32,9 @@ Navigate to **MCP Registry** → **Add MCP Server** → **Remote**
 
 | Server Name | Server URL | Authentication |
 |-------------|------------|----------------|
-| TechHub | `http://localhost:3001/sse` | None |
-| GadgetZone | `http://localhost:3002/sse` | None |
-| IoTMarket | `http://localhost:3003/sse` | None |
+| TechHub | `http://secureprocure_techhub_1:3001/sse` | None |
+| GadgetZone | `http://secureprocure_gadgetzone_1:3002/sse` | None |
+| IoTMarket | `http://secureprocure_iotmarket_1:3003/sse` | None |
 
 > **Note**: For production, use your server's public IP (e.g., `http://167.71.200.129:3001/sse`)
 
@@ -44,7 +44,7 @@ Navigate to **MCP Registry** → **Add MCP Server** → **Remote**
 
 **Name:** `checkout-agent`  
 **Description:** `Handles cart operations and payments. Call this to add items to cart and process checkout. Will request user confirmation if needed.`  
-**Model:** GPT-4, GPT-4o, or GPT-5.2
+**Model:** gpt-5.2
 
 ### System Prompt
 ```
@@ -67,7 +67,7 @@ Navigate to **MCP Registry** → **Add MCP Server** → **Remote**
 
 | Server Name | Server URL | Authentication |
 |-------------|------------|----------------|
-| Cart | `http://localhost:3004/sse` | None |
+| Cart | `http://secureprocure_cart_1:3004/sse` | None |
 
 > **Note**: For production, use your server's public IP (e.g., `http://167.71.200.129:3004/sse`)
 
@@ -87,7 +87,7 @@ The tool returns one of:
 
 **Name:** `procurement-orchestrator`  
 **Description:** `Handles electronics procurement from start to finish. Takes user requests, delegates to specialists, and drives the process forward. Main entry point for all purchasing requests.`  
-**Model:** GPT-4, GPT-4o, or GPT-5.2
+**Model:** gpt-5.2
 
 ### System Prompt
 ```
