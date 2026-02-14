@@ -6,16 +6,16 @@
 
 ## 📋 Table of Contents
 
-- [Problem Statement](#problem-statement)
-- [Solution Overview](#solution-overview)
-- [Architecture](#architecture)
-- [Prerequisites](#prerequisites)
-- [Quick Start](#quick-start)
-- [Detailed Setup Guide](#detailed-setup-guide)
-- [Agent Configuration](#agent-configuration)
-- [Testing the System](#testing-the-system)
-- [Troubleshooting](#troubleshooting)
-- [Future Enhancements](#future-enhancements)
+- [Problem Statement](#-problem-statement)
+- [Solution Overview](#-solution-overview)
+- [Architecture](#-architecture)
+- [Prerequisites](#-prerequisites)
+- [Quick Start](#-quick-start)
+- [Detailed Setup Guide](#-detailed-setup-guide)
+- [Agent Configuration](#-agent-configuration)
+- [Testing the System](#-testing-the-system)
+- [Troubleshooting](#-troubleshooting)
+- [Future Enhancements](#-future-enhancements)
 
 ---
 
